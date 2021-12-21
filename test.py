@@ -1,17 +1,7 @@
 import random
+from modeles import Player
 
 
-class Player:
-    def __init__(self, name, age, score):
-        self.name = name
-        self.age = age
-        self.points = Player.random()
-        self.score = score
-
-    def __str__(self):
-        return f"{self.name} - {self.score}"
-    def random():
-        return random.randint(0, 20)
 
 dice = Player.random()
 
@@ -56,8 +46,8 @@ for match in matchs:
 playerslists = groupe1 + groupe2
 playerslists_ordering = sorted(playerslists, key=lambda x: x.score, reverse=True)
 
-for player in playerslists_ordering:
-    print(player)    
+#for player in playerslists_ordering:
+ #   print(player)    
 
 def check_match(p1, p2, matchs):
     for item in matchs:
@@ -65,40 +55,59 @@ def check_match(p1, p2, matchs):
             return True
     return False
 
-
-match_round2 = []
-
 def check_player(p1, p2, match_round2):    
     for item in match_round2: 
         if (p1 == item[0][0] or p1 == item[0][1]) or (p2 == item[0][0] or p2 == item[0][1]):  
             return True           
     return False
 
-for i in range (0, 8):
-    for j in range (i+1, 8):
+def update_score(p1, p2):
+    if p1.points > p2.points:
+        p1.score += 1
+    elif p2.points > p1.points:
+        p2.score += 1
+    else:
+        p1.score += 0.5
+        p2.score += 0.5
+
+
+next = True
+
+compteur = 1
+while compteur < 9: 
+
+#for k in range(1, 4):
+    print(f" ------------------ ROUND {compteur} -----------------")
+    current_round= []
+    playerslists_ordering = sorted(playerslists, key=lambda x: x.score, reverse=True)
+    print(playerslists_ordering)
+    for i in range (0, 8):
         p1 = playerslists_ordering[i].name
-        p2 = playerslists_ordering[j].name
-        match = ((playerslists_ordering[i].name, playerslists_ordering[j].name), (playerslists_ordering[i].score, playerslists_ordering[j].score))
-        print(match)
-        if check_match(p1, p2, matchs) == False:       
-            if check_player(p1, p2, match_round2) == False:
-                match_round2.append(match)
-                matchs.append(match)
-                print(matchs)
-                break
+        #print(p1)
+        for j in range (i+1, 8):
+            p2 = playerslists_ordering[j].name
+            print(p1, p2)
+            match = ((playerslists_ordering[i].name, playerslists_ordering[j].name), (playerslists_ordering[i].score, playerslists_ordering[j].score))
+            #print("*"*20)
+            #print(match)
+            if check_match(p1, p2, matchs) == False:       
+                if check_player(p1, p2, current_round) == False:
+                    current_round.append(match)
+                    matchs.append(match)
+                    update_score(playerslists_ordering[i], playerslists_ordering[j])
+                    #print("match créé", match)
+                    break
+                else:
+                    pass
+                   # print("match non-ajouté", match)
             else:
-                print("match non-ajouté", match)
-        else:
-            print("pas de match", match)
-        
+                pass
+                #print("match non créé", match)
 
-print("*"*20)
-for match in matchs:
-    print(match)
-    pass
-
-#écrire une deuxième condition pour vérifier si le joueur en cours n'a pas déjà effectué 
-
-# - # ------------------ ROUND 3 -----------------
-
-#méthode récursive -> se renseigner
+    print(current_round)
+    compteur += 1
+    if len(current_round) == 0:
+        next = False
+        print("plus de matchs possibles")
+  
+# vérifier le bug de match, et mettre le code sous fonction "generate_round", et implémenter le tinydb
