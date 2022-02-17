@@ -5,5 +5,3 @@ controleur = Controleur()
 tour_controleur = Tour()
 
 controleur.run()
-
-tour_controleur.generate_tour()

@@ -1,33 +1,44 @@
-from tinydb import TinyDB, Query, where
+from tinydb import TinyDB
 from view import Menu
 from tour_controleurs import Tour
+from tournois import Tournoi
+import json
 
-db = TinyDB('database.json')
+db = TinyDB('database_joueurs.json')
+dbclassement = TinyDB('dbclassement.json')
 
 
 class Controleur:
     def __init__(self):
         self.view = Menu()
-        self.users = []    
+        self.users = []
+        self.tournois = Tournoi()
 
-    def run(self):       
+    def run(self):
         choice = self.view.display_menu()
-        if choice in range(1, 5):
+        if choice in range(1, 9):
             if choice == 1:
-                return self.create_user()
+                return self.tournois.save_tournoi()
             elif choice == 2:
+                return self.create_user()
+            elif choice == 3:
                 return self.display_user_list()
-            elif choice == 3:     
+            elif choice == 4:
                 db.drop_tables()
                 return self.run()
-            elif choice == 4:
+            elif choice == 5:
                 return self.create_tour()
-                
+            elif choice == 6:
+                return self.classement()
+            elif choice == 7:
+                self.tournois.afficher_tournoi()
+            elif choice == 8:
+                self.tournois.supprimer_tournois()
 
         else:
-            self.view.display_message("Choix incorrect, merci de faire un choix entre 1 et 3.")
+            self.view.display_message("Choix incorrect, merci de faire un choix entre 1 et 6.")
             return self.run()
-    
+
     def create_user(self):
 
         nom = self.view.get_user_input("Entrez le nom de l'utilisateur.\n")
@@ -38,8 +49,7 @@ class Controleur:
         self.users.append(user)
         self.view.display_message("Utilisateur créé avec succès.")
         self.run()
-            
-        
+
     def display_user_list(self):
         for item in db:
             print(item)
@@ -55,41 +65,21 @@ class Controleur:
         return user
 
     def create_tour(self):
-        tour = Tour()
-        tour.generate_tour()
+        tournoidb = {}
+        with open('dbtournoi.json') as json_file:
+            data = json.load(json_file)
+            print(data)
+            tournoidb = data
+        if not tournoidb:
+            print("Veuillez créer un tournoi.")
+            self.run()
+        else:
+            tour = Tour()
+            tour.generate_tour()
 
-
-
-
-# class Controleur_joueur:
-#     pass
-
-# class Controleur_match:
-#     pass
-
-# class Constroleur_round:
-#     pass
-
-# class Controleur_resultat():
-#     # resultat = input("Entrez le résultat")
-#     # if resultat == 1:
-#     #     print("P1 a gagné")
-#     # elif resultat == 0:
-#     #     print("P1 a perdu")
-#     # elif resultat == 0.5:
-#     #     print("Egalité")
-
-# class Controleur_menu():
-#     pass
-
-
-# créer méthode pour créer tour, quand on créée un tour il faut enregistrer les matchs dans la base de données au fur et à mesure
-# mettre la génération de tour sous forme manuelle (pas prio)
-# enregistrer tous les matchs avec le résultat
-# méthode créer joueur/afficher liste des joueurs 
-# plusieurs class (controleur_joueur, controleur_match, controleur_round etc)
-#modèle pour les joueurs/matchs
-#vue pour les joueurs/matchs 
-
-#controleur sont des actions en fonction du choix de l'utilisateur quand il va effectuer une action, ça va afficher un menu 
-#stocker l'input en variable
+    def classement(self):
+        liste_joueurs = db.table("_default")
+        result = liste_joueurs.all()
+        result_sorted = sorted(result, key=lambda d: d['score'], reverse=True)
+        print(result_sorted)
+        pass
