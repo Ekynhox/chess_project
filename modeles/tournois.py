@@ -1,8 +1,8 @@
 from tinydb import TinyDB
-from view import Menu
+from vue.view import Menu
 
 
-dbtournoi = TinyDB("dbtournoi.json")
+dbtournoi = TinyDB("database/dbtournoi.json")
 
 class Tournoi:
 

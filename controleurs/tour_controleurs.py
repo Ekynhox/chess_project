@@ -5,8 +5,8 @@ from tinydb import TinyDB, Query
 class Tour:
 
     def __init__(self):
-        self.db = TinyDB('database.json')
-        self.dbclassement = TinyDB('dbclassement.json')
+        self.db = TinyDB('database/database.json')
+        self.dbclassement = TinyDB('database/dbclassement.json')
 
     def generate_tour(self):
         result = self.db.all()

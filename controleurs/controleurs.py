@@ -1,11 +1,11 @@
 from tinydb import TinyDB
-from view import Menu
-from tour_controleurs import Tour
-from tournois import Tournoi
+from vue.view import Menu
+from controleurs.tour_controleurs import Tour
+from modeles.tournois import Tournoi
 import json
 
-db = TinyDB('database_joueurs.json')
-dbclassement = TinyDB('dbclassement.json')
+db = TinyDB('database/database_joueurs.json')
+dbclassement = TinyDB('database/dbclassement.json')
 
 
 class Controleur:
@@ -32,8 +32,10 @@ class Controleur:
                 return self.classement()
             elif choice == 7:
                 self.tournois.afficher_tournoi()
+                return self.run()
             elif choice == 8:
                 self.tournois.supprimer_tournois()
+                return self.run()
 
         else:
             self.view.display_message("Choix incorrect, merci de faire un choix entre 1 et 6.")
