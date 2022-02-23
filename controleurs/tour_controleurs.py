@@ -16,8 +16,8 @@ class Tour:
         matchs = []
 
         for i in range(round):
-            groupe1[i].points = random.randint(0, 20)
-            groupe2[i].points = random.randint(0, 20)
+            groupe1[i].points = random.randint(0, 100)
+            groupe2[i].points = random.randint(0, 100)
         if groupe1[i].points > groupe2[i].points:
             groupe1[i]["score"] += 1
             print(groupe1[i]["nom"] + " gagne")

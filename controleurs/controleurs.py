@@ -18,18 +18,23 @@ class Controleur:
         choice = self.view.display_menu()
         if choice in range(1, 9):
             if choice == 1:
-                return self.tournois.save_tournoi()
+                self.tournois.save_tournoi()
+                return self.run()
             elif choice == 2:
-                return self.create_user()
+                self.create_user()
+                return self.run()
             elif choice == 3:
-                return self.display_user_list()
+                self.display_user_list()
+                return self.run()
             elif choice == 4:
                 db.drop_tables()
                 return self.run()
             elif choice == 5:
-                return self.create_tour()
+                self.create_tour()
+                return self.run()
             elif choice == 6:
-                return self.classement()
+                self.classement()
+                return self.run
             elif choice == 7:
                 self.tournois.afficher_tournoi()
                 return self.run()
@@ -68,7 +73,7 @@ class Controleur:
 
     def create_tour(self):
         tournoidb = {}
-        with open('dbtournoi.json') as json_file:
+        with open('database/dbtournoi.json') as json_file:
             data = json.load(json_file)
             print(data)
             tournoidb = data
