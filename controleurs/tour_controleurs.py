@@ -5,19 +5,22 @@ from tinydb import TinyDB, Query
 class Tour:
 
     def __init__(self):
-        self.db = TinyDB('database/database.json')
+        self.db = TinyDB('database/database_joueurs.json')
         self.dbclassement = TinyDB('database/dbclassement.json')
 
+    #on génère le tour 1 automatiquement
     def generate_tour(self):
         result = self.db.all()
         round = 4
         groupe1 = result[:4]
         groupe2 = result[4:]
         matchs = []
-
+    
         for i in range(round):
-            groupe1[i].points = random.randint(0, 100)
-            groupe2[i].points = random.randint(0, 100)
+            print(i)
+            groupe1[i].points = random.randint(0, 20)
+            
+            groupe2[i].points = random.randint(0, 20)
         if groupe1[i].points > groupe2[i].points:
             groupe1[i]["score"] += 1
             print(groupe1[i]["nom"] + " gagne")
@@ -39,6 +42,7 @@ class Tour:
 
         # - # ------------------ ROUND 1 -----------------
         matchs = []
+        #génération des rounds suivants
         for i in range(round):
             groupe1[i].points = random.randint(0, 20)
             groupe2[i].points = random.randint(0, 20)
@@ -57,7 +61,8 @@ class Tour:
       
         for match in matchs:
             print(match)
-            
+
+        #gestion du tour par tour    
         playerslists = groupe1 + groupe2
         playerslists_ordering = sorted(playerslists, key=lambda x: x["score"], reverse=True)   
         compteur = 1     
@@ -114,6 +119,7 @@ class Tour:
                 return True
         return False
 
+    #update du score des joueurs
     def update_score(self, p1, p2):
         Joueur = Query()
         liste_joueurs = self.db.table("_default")

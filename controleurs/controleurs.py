@@ -84,6 +84,7 @@ class Controleur:
             tour = Tour()
             tour.generate_tour()
 
+    #création du classement
     def classement(self):
         liste_joueurs = db.table("_default")
         result = liste_joueurs.all()
