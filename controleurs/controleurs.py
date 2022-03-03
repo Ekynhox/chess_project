@@ -43,7 +43,8 @@ class Controleur:
                 return self.run()
 
         else:
-            self.view.display_message("Choix incorrect, merci de faire un choix entre 1 et 6.")
+            self.view.display_message("""Choix incorrect,
+                merci de faire un choix entre 1 et 6.""")
             return self.run()
 
     def create_user(self):
@@ -84,7 +85,7 @@ class Controleur:
             tour = Tour()
             tour.generate_tour()
 
-    #création du classement
+    # création du classement
     def classement(self):
         liste_joueurs = db.table("_default")
         result = liste_joueurs.all()

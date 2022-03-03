@@ -1,5 +1,5 @@
 1. Créer l'environnement virtuel pour ce projet : py -m venv env
-2. Activer l'environnement virtuel : env/Scripts/activate
+2. Activer l'environnement virtuel : source env/Scripts/activate
 3. Télécharger les modules via: pip install requirements.txt  
 4. Lancer le projet via la commande main.py
 5. Créer un nouveau tournoi

@@ -1,2 +1,3 @@
 tinydb
-json
+flake8
+flake8-html
