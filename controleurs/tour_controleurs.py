@@ -1,5 +1,8 @@
 import random
+from vue.view import TournoiView
+from modeles.joueurs import Joueurs
 from tinydb import TinyDB, Query
+
 
 
 class Tour:
@@ -7,10 +10,15 @@ class Tour:
     def __init__(self):
         self.db = TinyDB('database/database_joueurs.json')
         self.dbclassement = TinyDB('database/dbclassement.json')
+        db = self.db.all()
+        dbclassement = self.dbclassement.all()
+        self.joueurs = Joueurs(db, dbclassement)
+        
+        self.tournoi = TournoiView()
 
     # on génère le tour 1 automatiquement
     def generate_tour(self):
-        result = self.db.all()
+        result = self.joueurs.get_all_joueurs()
         round = 4
         groupe1 = result[:4]
         groupe2 = result[4:]
@@ -79,7 +87,7 @@ class Tour:
             playerslists_ordering = sorted(playerslists,
                                         key=lambda x: x["score"],
                                         reverse=True)
-            print(playerslists_ordering)
+            
             for i in range(0, 8):
                 p1 = playerslists_ordering[i]["nom"]
                 for j in range(i+1, 8):
@@ -128,10 +136,8 @@ class Tour:
 
     # update du score des joueurs
     def update_score(self, p1, p2):
-        Joueur = Query()
-        liste_joueurs = self.db.table("_default")
-        score_p1 = int(float(input("""
-        Entrez le score du joueur {}""".format(p1["nom"]))))
+        
+        score_p1 = self.tournoi.display_score_joueur(p1)
 
         if score_p1 == 1:
             p1["score"] += 1
@@ -142,8 +148,7 @@ class Tour:
         else:
             p1["score"] += 0.5
             p2["score"] += 0.5
-        liste_joueurs.update({'score': p1["score"]}, Joueur.nom == p1["nom"])
-        liste_joueurs.update({'score': p2["score"]}, Joueur.nom == p2["nom"])
+        self.joueurs.update_score_joueur(p1, p2)
 
     def serialize_matchs(self, match):
         resultat = {"match": match}

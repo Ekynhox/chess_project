@@ -1,7 +1,9 @@
 from tinydb import TinyDB
-from vue.view import Menu
+from vue.view import ClassementView
+from vue.view import Menu, JoueursView, TournoiView
 from controleurs.tour_controleurs import Tour
 from modeles.tournois import Tournoi
+from modeles.joueurs import Joueurs
 import json
 
 db = TinyDB('database/database_joueurs.json')
@@ -11,8 +13,13 @@ dbclassement = TinyDB('database/dbclassement.json')
 class Controleur:
     def __init__(self):
         self.view = Menu()
+        self.view_joueur = JoueursView()
+        self.view_tournoi = TournoiView()
+        self.view_classement = ClassementView()
         self.users = []
         self.tournois = Tournoi()
+        self.joueurs = Joueurs(db, dbclassement)
+        self.tour = Tour()
 
     def run(self):
         choice = self.view.display_menu()
@@ -27,16 +34,16 @@ class Controleur:
                 self.display_user_list()
                 return self.run()
             elif choice == 4:
-                db.drop_tables()
+                self.joueurs.delete_all_joueurs()
                 return self.run()
             elif choice == 5:
                 self.create_tour()
                 return self.run()
             elif choice == 6:
-                self.classement()
+                self.display_classement()
                 return self.run
             elif choice == 7:
-                self.tournois.afficher_tournoi()
+                self.display_tournoi()
                 return self.run()
             elif choice == 8:
                 self.tournois.supprimer_tournois()
@@ -52,25 +59,27 @@ class Controleur:
         nom = self.view.get_user_input("Entrez le nom de l'utilisateur.\n")
         age = self.view.get_user_input("Entrez l'âge de l'utilisateur.\n")
         score = self.view.get_user_input("Entrez le score de l'utilisateur.\n")
-        user = self.serialize_user(nom, age, int(score))
-        db.insert(user)
+        user = self.joueurs.serialize_user(nom, age, int(score))
+        self.joueurs.save_joueurs(user)
         self.users.append(user)
         self.view.display_message("Utilisateur créé avec succès.")
         self.run()
 
     def display_user_list(self):
-        for item in db:
-            print(item)
-        self.view.display_message("Liste affichée avec succès.")
+        joueurs_list = self.joueurs.get_all_joueurs()
+        self.view_joueur.display_users(joueurs_list)
         self.run()
-
-    def serialize_user(self, nom, age, score):
-        user = {
-            "nom": nom,
-            "age": age,
-            "score": score
-        }
-        return user
+    
+    def display_tournoi(self):
+        tournoi_list = self.tournois.get_all_tournoi()
+        self.view_tournoi.display_tournoi(tournoi_list)
+        self.run()
+    
+    def display_classement(self):
+        classement = self.joueurs.get_classement()
+        self.view_classement.display_classement(classement)
+        self.run()
+        
 
     def create_tour(self):
         tournoidb = {}
@@ -81,14 +90,12 @@ class Controleur:
         if not tournoidb:
             print("Veuillez créer un tournoi.")
             self.run()
-        else:
-            tour = Tour()
-            tour.generate_tour()
+        else:            
+            self.tour.generate_tour()
 
     # création du classement
     def classement(self):
-        liste_joueurs = db.table("_default")
-        result = liste_joueurs.all()
+        result = self.joueurs.get_all_joueurs()
         result_sorted = sorted(result, key=lambda d: d['score'], reverse=True)
         print(result_sorted)
         pass
